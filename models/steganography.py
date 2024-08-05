@@ -90,9 +90,9 @@ class LSBSteg:
             self.put_binary_value(self.byteValue(c))
         print("Text encoded successfully")
         return self.image
+    
 
-
-
+    
     def decode_text(self):
         ls = self.read_bits(16)
         l = int(ls, 2)
