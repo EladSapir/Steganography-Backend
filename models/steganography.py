@@ -79,14 +79,19 @@ class LSBSteg:
             binval = "0" + binval
         return binval
 
+    # Add print statements to debug
     def encode_text(self, txt):
+        print(f"Encoding text: {txt}")
         l = len(txt)
         binl = self.binary_value(l, 16)
         self.put_binary_value(binl)
         for char in txt:
             c = ord(char)
             self.put_binary_value(self.byteValue(c))
+        print("Text encoded successfully")
         return self.image
+
+
 
     def decode_text(self):
         ls = self.read_bits(16)

@@ -10,6 +10,8 @@ bp = Blueprint('encode', __name__)
 def encode():
     image_file = request.files['image']
     watermark_text = request.form['text']
+    print(f"Received image: {image_file.filename}")
+    print(f"Watermark text: {watermark_text}")
     image = cv2.imdecode(np.frombuffer(image_file.read(), np.uint8), cv2.IMREAD_COLOR)
     steg = LSBSteg(image)
     result = steg.encode_text(watermark_text)
