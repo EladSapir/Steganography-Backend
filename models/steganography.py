@@ -79,7 +79,6 @@ class LSBSteg:
             binval = "0" + binval
         return binval
 
-    # Add print statements to debug
     def encode_text(self, txt):
         print(f"Encoding text: {txt}")
         l = len(txt)
@@ -90,9 +89,7 @@ class LSBSteg:
             self.put_binary_value(self.byteValue(c))
         print("Text encoded successfully")
         return self.image
-    
 
-    
     def decode_text(self):
         ls = self.read_bits(16)
         l = int(ls, 2)
@@ -105,28 +102,27 @@ class LSBSteg:
         return unhideTxt
 
     def encode_image(self, imtohide):
-        w = imtohide.width
-        h = imtohide.height
-        if self.width * self.height * self.nbchannels < w * h * imtohide.channels:
+        h, w, _ = imtohide.shape
+        if self.width * self.height * self.nbchannels < w * h * imtohide.shape[2]:
             raise SteganographyException("Carrier image not big enough to hold all the data to steganography")
         binw = self.binary_value(w, 16)
         binh = self.binary_value(h, 16)
         self.put_binary_value(binw)
         self.put_binary_value(binh)
-        for h in range(imtohide.height):
-            for w in range(imtohide.width):
-                for chan in range(imtohide.channels):
-                    val = imtohide[h, w][chan]
+        for i in range(h):
+            for j in range(w):
+                for chan in range(imtohide.shape[2]):
+                    val = imtohide[i, j][chan]
                     self.put_binary_value(self.byteValue(int(val)))
         return self.image
 
     def decode_image(self):
         width = int(self.read_bits(16), 2)
         height = int(self.read_bits(16), 2)
-        unhideimg = np.zeros((width, height, 3), np.uint8)
+        unhideimg = np.zeros((height, width, self.nbchannels), np.uint8)
         for h in range(height):
             for w in range(width):
-                for chan in range(unhideimg.channels):
+                for chan in range(self.nbchannels):
                     val = list(unhideimg[h, w])
                     val[chan] = int(self.read_byte(), 2)
                     unhideimg[h, w] = tuple(val)
