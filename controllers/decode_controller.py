@@ -1,6 +1,7 @@
-from flask import Blueprint, request
+from flask import Blueprint, request, send_file
 import cv2
 import numpy as np
+import io
 from models.steganography import LSBSteg
 
 bp = Blueprint('decode', __name__)
