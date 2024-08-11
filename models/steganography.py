@@ -105,15 +105,24 @@ class LSBSteg:
         h, w, _ = imtohide.shape
         if self.width * self.height * self.nbchannels < w * h * imtohide.shape[2]:
             raise SteganographyException("Carrier image not big enough to hold all the data to steganography")
+        
         binw = self.binary_value(w, 16)
         binh = self.binary_value(h, 16)
+        
         self.put_binary_value(binw)
         self.put_binary_value(binh)
+        
         for i in range(h):
             for j in range(w):
                 for chan in range(imtohide.shape[2]):
                     val = imtohide[i, j][chan]
-                    self.put_binary_value(self.byteValue(int(val)))
+                    try:
+                        binary_val = self.byteValue(int(val))
+                        self.put_binary_value(binary_val)
+                    except Exception as e:
+                        print(f"Error encoding pixel value {val} at position ({i},{j},{chan}): {e}")
+                        raise e
+        
         return self.image
 
     def decode_image(self):
