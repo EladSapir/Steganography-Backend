@@ -24,6 +24,11 @@ def encode():
             print(f"Received carrier image: {image_file.filename}")
             print(f"Received image to hide: {hidden_image_file.filename}")
             print(f"Carrier image size: {image.shape}, Hidden image size: {hidden_image.shape}")
+            
+            # Ensure the carrier image is large enough
+            if image.shape[0] * image.shape[1] * image.shape[2] < hidden_image.shape[0] * hidden_image.shape[1] * hidden_image.shape[2]:
+                raise SteganographyException("Carrier image not large enough to hold the hidden image.")
+                
             result = steg.encode_image(hidden_image)
         else:
             return "No valid data provided for encoding", 400
